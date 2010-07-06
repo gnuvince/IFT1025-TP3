@@ -3,11 +3,33 @@ package seismes;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+
+/**
+ * Interface pour la validation d'une chaîne de caractères.
+ * @author vince
+ *
+ */
 public interface Validator {
+    /**
+     * Vérifie une chaîne de caractères et retourne si elle est valide.
+     * @param input la chaîne à vérifier
+     * @return true si la chaîne est valide, false sinon
+     */
     boolean isValid(String input);
+    
+    /**
+     * Donne la raison pour laquelle la chaîne est invalide
+     * @return un String contenant l'erreur
+     */
     String getErrorMessage();
 }
 
+
+/**
+ * Vérifie qu'une valeur est numérique et se trouve dans un intervalle défini.
+ * @author vince
+ *
+ */
 class RangeValidator implements Validator {
     private double low;
     private double high;
@@ -35,6 +57,11 @@ class RangeValidator implements Validator {
 }
 
 
+/**
+ * Vérifie qu'une valeur est numérique et non-négative.
+ * @author vince
+ *
+ */
 class PositiveDoubleValidator implements Validator {
     public boolean isValid(String input) {
         double x;
@@ -53,6 +80,11 @@ class PositiveDoubleValidator implements Validator {
 }
 
 
+/**
+ * Vérifie qu'une valeur de date correspond à un format prédéfini.
+ * @author vince
+ *
+ */
 class DateValidator implements Validator {
     private static final String dateFormat = "yyyy/mm/dd";
     public boolean isValid(String input) {

@@ -3,7 +3,7 @@ package seismes;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -27,13 +27,14 @@ public class GUI {
     
     /**
      * Table de hachage qui contient le validateur pour les différents
-     * champs d'entrée.
+     * champs d'entrée.  Un LinkedHashMap est utilisé pour conserver
+     * l'ordre d'insertion.
      */
-    private Hashtable<JTextField, Validator> validators;
+    private LinkedHashMap<JTextField, Validator> validators;
     
     
     public GUI() {
-        validators = new Hashtable<JTextField, Validator>();
+        validators = new LinkedHashMap<JTextField, Validator>();
     }
     
     
@@ -43,11 +44,14 @@ public class GUI {
     }
     
     
-    public Hashtable<JTextField, Validator> getValidators() {
+    public LinkedHashMap<JTextField, Validator> getValidators() {
         return validators;
     }
 
     
+    /**
+     * Bâti l'interface graphique de l'application
+     */
     private void createGUI() {
         final JFrame frame = new JFrame("Séismes bing bang boum boum!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,20 +78,20 @@ public class GUI {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Hashtable<JTextField, Validator> validators = getValidators();
-                String errorMessage = "";
+                LinkedHashMap<JTextField, Validator> validators = getValidators();
+                StringBuilder errorMessage = new StringBuilder();
                 boolean hasErrors = false;
                 
                 for (JTextField tf: validators.keySet()) {
                     Validator v = validators.get(tf);
                     if (!v.isValid(tf.getText())) {
-                        errorMessage += tf.getName() + ": " + v.getErrorMessage() + "\n";
+                        errorMessage.append(tf.getName() + ": " + v.getErrorMessage() + "\n");
                         hasErrors = true;
                     }
                 }
                 
                 if (hasErrors)
-                    JOptionPane.showMessageDialog(frame, errorMessage);
+                    JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         });
         leftPanel.add(searchButton);
@@ -109,6 +113,13 @@ public class GUI {
         frame.setVisible(true);
     }
     
+    
+    /**
+     * Ajoute un JLabel et un JTextField à un panneau
+     * @param panel le panneau d'ajout
+     * @param labelText le text du JLabel
+     * @return
+     */
     private JTextField addTextField(JPanel panel, String labelText) {
         JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JTextField textField = new JTextField(10);

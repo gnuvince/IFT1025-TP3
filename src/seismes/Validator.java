@@ -86,7 +86,7 @@ class PositiveDoubleValidator implements Validator {
  *
  */
 class DateValidator implements Validator {
-    private static final String dateFormat = "yyyy/mm/dd";
+    private static final String dateFormat = "yyyy/MM/dd";
     public boolean isValid(String input) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         try {

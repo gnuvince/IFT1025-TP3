@@ -1,5 +1,7 @@
 package seismes;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -71,6 +73,7 @@ public class GUI {
         distance = addTextField(leftPanel, "Distance");
         date = addTextField(leftPanel, "Date de départ");
         minimalMagnitude = addTextField(leftPanel, "Magitude minimale");
+        
         
         // Créer les validateurs
         validators.put(latitude, new RangeValidator(-90, 90));
@@ -159,7 +162,7 @@ public class GUI {
         JLabel label = new JLabel(labelText);
         
         label.setLabelFor(textField);
-        panel.add(new JLabel(labelText));
+        panel.add(label);
         panel.add(textField);
         
         return textField;

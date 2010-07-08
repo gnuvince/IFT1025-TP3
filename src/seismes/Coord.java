@@ -3,29 +3,24 @@
  */
 package seismes;
 
-import java.io.Serializable;
-
 /**
  * @author Eric Thivierge, Vincent Foley
  *
  */
-public class Coord implements Serializable {
-	private double
-		longitude,
-		latitude;
-	
+public class Coord {
+    private double latitude;
+    private double longitude;
+		
 	public Coord(double latitude, double longitude) {
+	    this.latitude = latitude;
 		this.longitude = longitude;
-		this.latitude = latitude;
 	}
 	
 	public double getLongitude() {
-		
 		return this.longitude;
 	}	
 	
 	public double getLatitude() {
-		
 		return this.latitude;
 	}
 	
@@ -38,12 +33,12 @@ public class Coord implements Serializable {
 	}
 	
 	public double distance(Coord coord) {
-		
 		return 0.0;
 	}
 	
-	public void print() {
-		System.out.println(this.latitude + ", " + this.longitude);
+	@Override
+	public String toString() {
+		return latitude + ", " + longitude;
 	}
 	
 }

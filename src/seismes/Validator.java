@@ -1,7 +1,7 @@
 package seismes;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 
 /**
@@ -86,11 +86,11 @@ class PositiveDoubleValidator implements Validator {
  *
  */
 class DateValidator implements Validator {
-    private static final String dateFormat = "yyyy/MM/dd";
+    private static final String dateFormat = "MM/dd/yy";
     public boolean isValid(String input) {
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
         try {
-            sdf.parse(input);
+            df.parse(input);
             return true;
         }
         catch (ParseException e) {

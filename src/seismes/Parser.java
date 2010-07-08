@@ -15,7 +15,7 @@ public class Parser {
 		
 	}
 	
-	public Entree parseLine(String line) {
+	public void parseLine(String line) {
 		
 	}
 

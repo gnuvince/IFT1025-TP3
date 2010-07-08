@@ -1,7 +1,6 @@
 package seismes;
 
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -145,7 +144,9 @@ public class GUI {
         radioPanel.add(sortDistance);
         radioPanel.add(sortMagnitude);
         
-        panel.add(new JLabel("Trier par"));
+        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        labelPanel.add(new JLabel("Trier par"));
+        panel.add(labelPanel);
         panel.add(radioPanel);
     }
     
@@ -160,10 +161,17 @@ public class GUI {
         JTextField textField = new JTextField(10);
         textField.setName(labelText);
         JLabel label = new JLabel(labelText);
-        
         label.setLabelFor(textField);
-        panel.add(label);
-        panel.add(textField);
+        
+        // Ces panneaux sont utilisés pour s'assurer que les champs
+        // texte ont la hauteur "normale".
+        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel textFieldPanel = new JPanel();
+        labelPanel.add(label);
+        textFieldPanel.add(textField);
+
+        panel.add(labelPanel);
+        panel.add(textFieldPanel);
         
         return textField;
     }

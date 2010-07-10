@@ -35,6 +35,9 @@ public class GUI {
     private JRadioButton sortMagnitude;
     private JRadioButton sortDistance;
     private JRadioButton sortDate;
+    private String sortType = "Date";
+    
+    private ActionListener rbAL;
     
     /**
      * Table de hachage qui contient les validateurs pour les différents
@@ -43,9 +46,45 @@ public class GUI {
      */
     private LinkedHashMap<JTextField, Validator> validators;
     
+    private class RBActionListener implements ActionListener{
+    	@Override
+        public void actionPerformed(ActionEvent e) {
+    		setSortType(e.getActionCommand());
+        }
+    }
+    
+    private void setSortType(String sortType) {
+    	this.sortType = sortType;
+    }
+    
+    private String getSortType() {
+    	return this.sortType;
+    }
+    
+    @SuppressWarnings("deprecation")
+	private Date getDate() {
+    	return new Date(date.getText());
+    }
+    
+    private double getLatitude() {
+    	return Double.parseDouble(latitude.getText());
+    }
+    
+    private double getLongitude() {
+    	return Double.parseDouble(longitude.getText());
+    }
+    
+    private double getDistance() {
+    	return Double.parseDouble(distance.getText());
+    }
+    
+    private double getMagnitude() {
+    	return Double.parseDouble(minimalMagnitude.getText());
+    }
     
     public GUI() {
         validators = new LinkedHashMap<JTextField, Validator>();
+        rbAL = new RBActionListener();
     }
     
     
@@ -96,6 +135,7 @@ public class GUI {
                 StringBuilder errorMessage = new StringBuilder();
                 boolean hasErrors = false;
                 Seisme[] res;
+                String sortType;
                 
                 for (JTextField tf: validators.keySet()) {
                     Validator v = validators.get(tf);
@@ -108,14 +148,22 @@ public class GUI {
                 if (hasErrors)
                     JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
                 else {
-                	Date date = new Date();
-                	double latitude = 0.0;
-                	double longitude = 0.0;
-                	double distance = 0.0;
-                	double magnitude = 0.0;
-                	res = SeismeUtils.filterSeismes( date, latitude,
-                			         longitude, distance, magnitude, filename);
-                	output.setText(SeismeUtils.arrayToString(SeismeUtils.sortByDate(res)));
+                	res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
+                			                    getDistance(), getMagnitude(), filename);
+                	System.out.println("res.length: " + res.length);
+                	for (Seisme s : res) {
+                		if (s != null)
+                			System.out.println(s.toString());
+                	}
+                	System.out.println("Fin de la liste");
+                	sortType = getSortType();
+                	if (sortType.equals("Date"))
+                		SeismeUtils.sortByDate(res);
+                	else if (sortType.equals("Distance"))
+                		SeismeUtils.sortByDistance(res);
+                	else
+                		SeismeUtils.sortByMagnitude(res);
+                	output.setText(SeismeUtils.collapseToString(res));
                 }
             }
         });
@@ -147,6 +195,9 @@ public class GUI {
         sortDate = new JRadioButton("Date", true);
         sortDistance = new JRadioButton("Distance");
         sortMagnitude = new JRadioButton("Magnitude");
+        sortDate.addActionListener(rbAL);
+        sortDistance.addActionListener(rbAL);
+        sortMagnitude.addActionListener(rbAL);
         
         ButtonGroup bg = new ButtonGroup();
         bg.add(sortDate);
@@ -163,6 +214,7 @@ public class GUI {
         labelPanel.add(new JLabel("Trier par"));
         panel.add(labelPanel);
         panel.add(radioPanel);
+        
     }
     
     

@@ -9,7 +9,10 @@ public class SeismeUtils {
     public static void sortByDate(Seisme[] arr) {
         Arrays.sort(arr, new Comparator<Seisme>() {
            public int compare(Seisme s1, Seisme s2) {
-               return s1.getDatetime().compareTo(s2.getDatetime());
+        	   if (s1 != null && s2 != null)
+        		   return s1.getDatetime().compareTo(s2.getDatetime());
+        	   else
+        		   return 0;
            }
         });
     }
@@ -17,7 +20,10 @@ public class SeismeUtils {
     public static void sortByDistance(Seisme[] arr) {
         Arrays.sort(arr, new Comparator<Seisme>() {
            public int compare(Seisme s1, Seisme s2) {
-               return (int)((s1.distance() - s2.distance()) * 10);
+        	   if (s1 != null && s2 != null)
+        		   return (int)((s1.distance() - s2.distance()) * 10);
+        	   else
+        		   return 0;
            }
         });
     }
@@ -26,7 +32,10 @@ public class SeismeUtils {
     public static void sortByMagnitude(Seisme[] arr) {
         Arrays.sort(arr, new Comparator<Seisme>() {
            public int compare(Seisme s1, Seisme s2) {
-               return (int)((s1.getMagnitude() - s2.getMagnitude()) * 10);
+        	   if (s1 != null && s2 != null)
+        		   return (int)((s1.getMagnitude() - s2.getMagnitude()) * 10);
+        	   else
+        		   return 0;
            }
         });
     }
@@ -34,16 +43,10 @@ public class SeismeUtils {
     public static boolean isAccepted(Date afterDate, double latitude,
     							     double longitude, double distance,
     								 double magnitude, Seisme seisme) {
-    	boolean retval = true;
     	
-    	if (afterDate != null)
-    		retval = retval && (seisme.getDatetime().after(afterDate));
-    	if (distance >= 0)
-    		retval = retval && (new Coord(latitude, longitude).distance(seisme.getCoord()) >= distance);
-    	if (magnitude != 0)
-    		retval = retval && (seisme.getMagnitude() >= magnitude);
-    	
-    	return retval;
+    	return (seisme.getDatetime().after(afterDate)) &&
+    		    (new Coord(latitude, longitude).distance(seisme.getCoord()) <= distance) &&
+    		    (seisme.getMagnitude() >= magnitude);
     }
     
     public static Seisme[] filterSeismes(Date afterDate, double latitude,
@@ -58,6 +61,7 @@ public class SeismeUtils {
 		filtered = new Seisme[raw.length];
 		for (Seisme s: raw) {
 			if (isAccepted(afterDate, latitude, longitude, distance, magnitude, s)) {
+				System.out.println("Accepte!!!");
 				filtered[n] = s;
 				n++;
 			}
@@ -65,11 +69,12 @@ public class SeismeUtils {
     	return filtered;
     }
     
-    public static String arrayToString(Seisme[] arr) {
+    public static String collapseToString(Seisme[] arr) {
     	StringBuilder sb = new StringBuilder();
     	
     	for (Seisme s : arr) {
-    		sb.append(s.toString() + "\n");
+    		if (s != null)
+    			sb.append(s.toString() + "\n");
     	}
     	
     	return sb.toString();

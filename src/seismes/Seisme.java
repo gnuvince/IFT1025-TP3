@@ -72,5 +72,19 @@ public class Seisme {
     public void setComment(String comment) {
         this.comment = comment;
     }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+
+    	sb.append(this.datetime + ", ");
+    	sb.append(this.coord.getLatitude() + ", ");
+    	sb.append(this.coord.getLongitude() + ", ");
+    	sb.append(this.magnitude + ", ");
+    	sb.append(this.depth + ", ");
+    	sb.append(this.comment);
+    	
+    	return sb.toString();
+    }
 
 }

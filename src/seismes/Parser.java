@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * @author Eric Thivierge
+ * @author Eric Thivierge, Vincent Foley
  *
  */
 public class Parser {
@@ -60,8 +60,8 @@ public class Parser {
 	        Date datetime = parseDatetime(components[0], components[1]);
 	        double lat = Double.parseDouble(components[2]);
 	        double lon = Double.parseDouble(components[3]);
-	        double magnitude = Double.parseDouble(sanitize(components[4]));
-	        double depth = Double.parseDouble(sanitize(components[5]));
+	        double depth = Double.parseDouble(sanitize(components[4]));
+	        double magnitude = Double.parseDouble(sanitize(components[5]));
 	        String comment = components[6];
 	        return new Seisme(lat, lon, magnitude, datetime, depth, comment);
 	    }

@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.LinkedHashMap;
 
 import javax.swing.BoxLayout;
@@ -20,6 +21,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class GUI {
+	private final String filename =
+	    "/Users/eric/Documents/dev/workspace/IFT1025-TP3/src/seismes/seismes.csv";
+	
     private JTextArea output;
     
     private JTextField latitude;
@@ -91,6 +95,7 @@ public class GUI {
                 LinkedHashMap<JTextField, Validator> validators = getValidators();
                 StringBuilder errorMessage = new StringBuilder();
                 boolean hasErrors = false;
+                Seisme[] res;
                 
                 for (JTextField tf: validators.keySet()) {
                     Validator v = validators.get(tf);
@@ -102,6 +107,16 @@ public class GUI {
                 
                 if (hasErrors)
                     JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
+                else {
+                	Date date = new Date();
+                	double latitude = 0.0;
+                	double longitude = 0.0;
+                	double distance = 0.0;
+                	double magnitude = 0.0;
+                	res = SeismeUtils.filterSeismes( date, latitude,
+                			         longitude, distance, magnitude, filename);
+                	output.setText(SeismeUtils.arrayToString(SeismeUtils.sortByDate(res)));
+                }
             }
         });
         leftPanel.add(searchButton);

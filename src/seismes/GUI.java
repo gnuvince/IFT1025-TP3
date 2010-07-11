@@ -20,10 +20,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+
 public class GUI {
-	private final String filename =
-	    "/Users/eric/Documents/dev/workspace/IFT1025-TP3/src/seismes/seismes.csv";
-	
+    private String filename;
     private JTextArea output;
     
     private JTextField latitude;
@@ -82,14 +81,15 @@ public class GUI {
     	return Double.parseDouble(minimalMagnitude.getText());
     }
     
-    public GUI() {
+    public GUI(String filename) {
+        this.filename = filename;
         validators = new LinkedHashMap<JTextField, Validator>();
         rbAL = new RBActionListener();
     }
     
     
     public static void main(String[] args) {
-        GUI gui = new GUI();
+        GUI gui = new GUI(args[0]);
         gui.createGUI();
     }
     
@@ -134,7 +134,6 @@ public class GUI {
                 LinkedHashMap<JTextField, Validator> validators = getValidators();
                 StringBuilder errorMessage = new StringBuilder();
                 boolean hasErrors = false;
-                Seisme[] res;
                 String sortType;
                 
                 for (JTextField tf: validators.keySet()) {
@@ -148,8 +147,8 @@ public class GUI {
                 if (hasErrors)
                     JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
                 else {
-                	res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
-                			                    getDistance(), getMagnitude(), filename);
+                    Seisme[] res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
+                        getDistance(), getMagnitude(), filename);
                 	sortType = getSortType();
                 	if (sortType.equals("Date"))
                 		SeismeUtils.sortByDate(res);

@@ -54,18 +54,18 @@ public class SeismeUtils {
 		                               double longitude, double distance,
 			                           double magnitude, String filename) {
     	
-    	Parser p = new Parser(filename);
-     	Seisme[] all;
+        Parser p = new Parser(filename);
+    	Seisme[] all;
         ArrayList<Seisme> accepted = new ArrayList<Seisme>();
- 		
- 		p.parse();
- 		all = p.getSeismes();
- 		for (Seisme s: all) {
- 			if (isAccepted(afterDate, latitude, longitude, distance, magnitude, s)) {
- 				accepted.add(s);
- 			}
- 		}
-     	return accepted.toArray(new Seisme[1]);
+		
+		p.parse();
+		all = p.getSeismes();
+		for (Seisme s: all) {
+			if (isAccepted(afterDate, latitude, longitude, distance, magnitude, s)) {
+				accepted.add(s);
+			}
+		}
+    	return accepted.toArray(new Seisme[1]);
     }
     
     public static String collapseToString(Seisme[] arr) {

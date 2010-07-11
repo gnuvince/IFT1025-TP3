@@ -2,7 +2,6 @@ package seismes;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -19,16 +18,10 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
-//import seismes.GUI_Vince.RBActionListener;
 
 public class GUI {
 	private String filename;
@@ -57,13 +50,44 @@ public class GUI {
      */
     private LinkedHashMap<JTextField, Validator> validators;
     
+    
+    private void setSortType(String sortType) {
+    	this.sortType = sortType;
+    }
+    
+    private String getSortType() {
+    	return this.sortType;
+    }
+    
+    @SuppressWarnings("deprecation")
+	private Date getDate() {
+    	return new Date(date.getText());
+    }
+    
+    private double getLatitude() {
+    	return Double.parseDouble(latitude.getText());
+    }
+    
+    private double getLongitude() {
+    	return Double.parseDouble(longitude.getText());
+    }
+    
+    private double getDistance() {
+    	return Double.parseDouble(distance.getText());
+    }
+    
+    private double getMagnitude() {
+    	return Double.parseDouble(minimalMagnitude.getText());
+    }
+    
     public GUI(String filename) {
     	this.filename = filename;
         validators = new LinkedHashMap<JTextField, Validator>();
         rbAL = new RBActionListener();
         sbAL = new SBActionListener();
     }
-
+    
+    
     public LinkedHashMap<JTextField, Validator> getValidators() {
         return validators;
     }
@@ -93,7 +117,6 @@ public class GUI {
         minimalMagnitude = addTextField(paramsPanel, "Magitude minimale");
         minimalMagnitude.setToolTipText("Une valeur non négative");
         
-        
         // Créer les validateurs
         validators.put(latitude, new RangeValidator(-90, 90));
         validators.put(longitude, new RangeValidator(-180, 180));
@@ -101,16 +124,56 @@ public class GUI {
         validators.put(date, new DateValidator());
         validators.put(minimalMagnitude, new PositiveDoubleValidator());
         
+        for (JTextField tf: validators.keySet()) {
+            tf.setToolTipText(validators.get(tf).getErrorMessage());
+        }
+        
         // Créer les boutons radio de tri
-//        addRatioButtons(leftPanel);
         addRadioButtons(paramsPanel);
         
         JButton searchButton = new JButton("Rechercher");
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LinkedHashMap<JTextField, Validator> validators = getValidators();
+                StringBuilder errorMessage = new StringBuilder();
+                boolean hasErrors = false;
+                String sortType;
+                
+                for (JTextField tf: validators.keySet()) {
+                    Validator v = validators.get(tf);
+                    if (!v.isValid(tf.getText())) {
+                        errorMessage.append(tf.getName() + ": " + v.getErrorMessage() + "\n");
+                        hasErrors = true;
+                    }
+                }
+                
+                if (hasErrors)
+                    JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
+                else {
+                    Seisme[] res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
+                        getDistance(), getMagnitude(), filename);
+                	sortType = getSortType();
+                	if (sortType.equals("Date"))
+                		SeismeUtils.sortByDate(res);
+                	else if (sortType.equals("Distance"))
+                		SeismeUtils.sortByDistance(res);
+                	else
+                		SeismeUtils.sortByMagnitude(res);
+                	
+                	tableModel.setSeismes(res);
+                }
+            }
+        });
+        leftPanel.add(searchButton);
+        
+        
+        
+        // Côté droit de l'interface
         searchButton.addActionListener(sbAL);
         leftPanel.add(paramsPanel, BorderLayout.CENTER);
         leftPanel.add(searchButton, BorderLayout.SOUTH);
         
-        // Côté droit de l'interface
         // Côté droit de l'interface
         tableModel = new SeismeTableModel();
         output = new JTable(tableModel);
@@ -174,34 +237,6 @@ public class GUI {
     	return textField;
     }
     
-    private void setSortType(String sortType) {
-    	this.sortType = sortType;
-    }
-    
-    private String getSortType() {
-    	return this.sortType;
-    }
-    
-    @SuppressWarnings("deprecation")
-	private Date getDate() {
-    	return new Date(date.getText());
-    }
-    
-    private double getLatitude() {
-    	return Double.parseDouble(latitude.getText());
-    }
-    
-    private double getLongitude() {
-    	return Double.parseDouble(longitude.getText());
-    }
-    
-    private double getDistance() {
-    	return Double.parseDouble(distance.getText());
-    }
-    
-    private double getMagnitude() {
-    	return Double.parseDouble(minimalMagnitude.getText());
-    }
     
     private class RBActionListener implements ActionListener {
     	@Override
@@ -247,8 +282,11 @@ public class GUI {
     
     
     public static void main(String[] args) {
-        GUI gui = new GUI("/Users/eric/Documents/dev/workspace/IFT1025-TP3/src/seismes/seismes.csv");
-//        GUI gui = new GUI(args[0]);
+        if (args.length == 0) {
+            System.err.println("Utilisation: java seismes.GUI <fichier csv>");
+            System.exit(1);
+        }
+        GUI gui = new GUI(args[0]);
         gui.createGUI();
     }
 }

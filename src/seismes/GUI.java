@@ -1,5 +1,6 @@
 package seismes;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -19,12 +20,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
 
 public class GUI {
-    private String filename;
+	private String filename;
     private JTable output;
     private SeismeTableModel tableModel;
+    private final JFrame frame = new JFrame("Séismes bing bang boum boum!");
     
     private JTextField latitude;
     private JTextField longitude;
@@ -38,6 +46,7 @@ public class GUI {
     private String sortType = "Date";
     
     private ActionListener rbAL;
+    private ActionListener sbAL;
     
     /**
      * Table de hachage qui contient les validateurs pour les différents
@@ -84,8 +93,11 @@ public class GUI {
     
     public GUI(String filename) {
         this.filename = filename;
+    public GUI(String filename) {
+    	this.filename = filename;
         validators = new LinkedHashMap<JTextField, Validator>();
         rbAL = new RBActionListener();
+        sbAL = new SBActionListener();
     }
     
     
@@ -104,18 +116,25 @@ public class GUI {
      * Bâti l'interface graphique de l'application
      */
     private void createGUI() {
-        final JFrame frame = new JFrame("Séismes bing bang boum boum!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // Côté gauche de l'interface
-        JPanel leftPanel = new JPanel(new GridLayout(0, 2, 4, 4));
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        // New Layout
+        JPanel paramsPanel = new JPanel();	
+        paramsPanel.setLayout(new BoxLayout(paramsPanel, BoxLayout.Y_AXIS));
+        paramsPanel.setBorder(new TitledBorder(new EtchedBorder(), "Paramètres de recherche"));
         
-        // Ajouter les différents champs texte
-        latitude = addTextField(leftPanel, "Latitude de référence");
-        longitude = addTextField(leftPanel, "Longitude de référence");
-        distance = addTextField(leftPanel, "Distance");
-        date = addTextField(leftPanel, "Date de départ");
-        minimalMagnitude = addTextField(leftPanel, "Magitude minimale");
+        latitude = addTextField(paramsPanel, "Latitude de référence");
+        latitude.setToolTipText("[-90..90]");
+        longitude = addTextField(paramsPanel, "Longitude de référence");
+        longitude.setToolTipText("[-180..180]");
+        distance = addTextField(paramsPanel, "Distance");
+        distance.setToolTipText("Une distance non négative");
+        date = addTextField(paramsPanel, "Date de départ");
+        date.setToolTipText("mm/jj/aa");
+        minimalMagnitude = addTextField(paramsPanel, "Magitude minimale");
+        minimalMagnitude.setToolTipText("Une valeur non négative");
         
         // Créer les validateurs
         validators.put(latitude, new RangeValidator(-90, 90));
@@ -129,7 +148,7 @@ public class GUI {
         }
         
         // Créer les boutons radio de tri
-        addRatioButtons(leftPanel);
+        addRadioButtons(paramsPanel);
         
         JButton searchButton = new JButton("Rechercher");
         searchButton.addActionListener(new ActionListener() {
@@ -170,6 +189,11 @@ public class GUI {
         
         
         // Côté droit de l'interface
+        searchButton.addActionListener(sbAL);
+        leftPanel.add(paramsPanel, BorderLayout.CENTER);
+        leftPanel.add(searchButton, BorderLayout.SOUTH);
+        
+        // Côté droit de l'interface
         tableModel = new SeismeTableModel();
         output = new JTable(tableModel);
         
@@ -177,19 +201,20 @@ public class GUI {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(leftPanel);
         splitPane.setRightComponent(new JScrollPane(output));
+
         
         frame.add(splitPane);
         frame.pack();
-        frame.setSize(800, 600);
+        frame.setSize(900, 640);
         frame.setVisible(true);
     }
-
-
+    
     /**
      * Ajoute les boutons radio de tri
      * @param panel le panneau auquel ajouter les boutons radio
      */
-    private void addRatioButtons(JPanel panel) {
+    
+    private void addRadioButtons(JPanel panel) {
         sortDate = new JRadioButton("Date", true);
         sortDistance = new JRadioButton("Distance");
         sortMagnitude = new JRadioButton("Magnitude");
@@ -204,17 +229,15 @@ public class GUI {
         
         JPanel radioPanel = new JPanel();
         radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
+        radioPanel.setBorder(new TitledBorder(new EtchedBorder(), "Trier par"));
         radioPanel.add(sortDate);
         radioPanel.add(sortDistance);
         radioPanel.add(sortMagnitude);
         
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        labelPanel.add(new JLabel("Trier par"));
-        panel.add(labelPanel);
-        panel.add(radioPanel);
+        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panel.add(radioPanel, BorderLayout.NORTH);
         
     }
-    
     
     /**
      * Ajoute un JLabel et un JTextField à un panneau
@@ -222,23 +245,91 @@ public class GUI {
      * @param labelText le text du JLabel
      * @return le champ texte qui a été créé
      */
+    
     private JTextField addTextField(JPanel panel, String labelText) {
-        JTextField textField = new JTextField(10);
-        textField.setName(labelText);
-        JLabel label = new JLabel(labelText);
-        label.setLabelFor(textField);
-        
-        // Ces panneaux sont utilisés pour s'assurer que les champs
-        // texte ont la hauteur "normale".
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JPanel textFieldPanel = new JPanel();
-        labelPanel.add(label);
-        textFieldPanel.add(textField);
-
-        panel.add(labelPanel);
-        panel.add(textFieldPanel);
-        
-        return textField;
+    	JPanel newPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    	newPanel.add(new JLabel(labelText));
+    	JTextField textField = new JTextField(10);
+    	newPanel.add(textField);
+    	panel.add(newPanel);
+    	
+    	return textField;
     }
     
+    private void setSortType(String sortType) {
+    	this.sortType = sortType;
+    }
+    
+    private String getSortType() {
+    	return this.sortType;
+    }
+    
+    @SuppressWarnings("deprecation")
+	private Date getDate() {
+    	return new Date(date.getText());
+    }
+    
+    private double getLatitude() {
+    	return Double.parseDouble(latitude.getText());
+    }
+    
+    private double getLongitude() {
+    	return Double.parseDouble(longitude.getText());
+    }
+    
+    private double getDistance() {
+    	return Double.parseDouble(distance.getText());
+    }
+    
+    private double getMagnitude() {
+    	return Double.parseDouble(minimalMagnitude.getText());
+    }
+    
+    private class RBActionListener implements ActionListener {
+    	@Override
+        public void actionPerformed(ActionEvent e) {
+    		setSortType(e.getActionCommand());
+        }
+    }
+    
+    private class SBActionListener implements ActionListener {
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		LinkedHashMap<JTextField, Validator> validators = getValidators();
+    		StringBuilder errorMessage = new StringBuilder();
+    		boolean hasErrors = false;
+    		Seisme[] res;
+    		String sortType;
+
+    		for (JTextField tf: validators.keySet()) {
+    			Validator v = validators.get(tf);
+    			if (!v.isValid(tf.getText())) {
+    				errorMessage.append(tf.getName() + ": " + v.getErrorMessage() + "\n");
+    				hasErrors = true;
+    			}
+    		}
+
+    		if (hasErrors)
+    			JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
+    		else {
+    			res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
+    					getDistance(), getMagnitude(), filename);
+    			sortType = getSortType();
+    			if (sortType.equals("Date"))
+    				SeismeUtils.sortByDate(res);
+    			else if (sortType.equals("Distance"))
+    				SeismeUtils.sortByDistance(res);
+    			else
+    				SeismeUtils.sortByMagnitude(res);
+    			
+    			tableModel.setSeismes(res);
+    		}
+    	}
+    }
+    
+    
+    public static void main(String[] args) {
+        GUI gui = new GUI(args[0]);
+        gui.createGUI();
+    }
 }

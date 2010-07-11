@@ -28,14 +28,13 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+//import seismes.GUI_Vince.RBActionListener;
+
 public class GUI {
-	private final String filename =
-	    "/Users/eric/Documents/dev/workspace/IFT1025-TP3/src/seismes/seismes.csv";
-	
+	private String filename;
+    private JTable output;
+    private SeismeTableModel tableModel;
     private final JFrame frame = new JFrame("Séismes bing bang boum boum!");
-	
-    private JTextArea output;
-    private JTable output2;
     
     private JTextField latitude;
     private JTextField longitude;
@@ -58,8 +57,8 @@ public class GUI {
      */
     private LinkedHashMap<JTextField, Validator> validators;
     
-
-    public GUI() {
+    public GUI(String filename) {
+    	this.filename = filename;
         validators = new LinkedHashMap<JTextField, Validator>();
         rbAL = new RBActionListener();
         sbAL = new SBActionListener();
@@ -76,39 +75,12 @@ public class GUI {
     private void createGUI() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-//        // Côté gauche de l'interface
-//        JPanel leftPanel = new JPanel(new GridLayout(0, 2, 4, 4));
-//        
-//        // Ajouter les différents champs texte & ToolTips
-//        latitude = addTextField(leftPanel, "Latitude de référence");
-//        latitude.setToolTipText("[-90..90]");
-//        longitude = addTextField(leftPanel, "Longitude de référence");
-//        longitude.setToolTipText("[-180..180]");
-//        distance = addTextField(leftPanel, "Distance");
-//        distance.setToolTipText("Une distance non négative");
-//        date = addTextField(leftPanel, "Date de départ");
-//        date.setToolTipText("mm/jj/aa");
-//        minimalMagnitude = addTextField(leftPanel, "Magitude minimale");
-//        minimalMagnitude.setToolTipText("Une valeur non négative");
-        
         // Côté gauche de l'interface
         JPanel leftPanel = new JPanel(new BorderLayout());
         // New Layout
         JPanel paramsPanel = new JPanel();	
         paramsPanel.setLayout(new BoxLayout(paramsPanel, BoxLayout.Y_AXIS));
         paramsPanel.setBorder(new TitledBorder(new EtchedBorder(), "Paramètres de recherche"));
-        
-        // Ajouter les différents champs texte & ToolTips
-//        latitude = addTextField(leftPanel, "Latitude de référence");
-//        latitude.setToolTipText("[-90..90]");
-//        longitude = addTextField(leftPanel, "Longitude de référence");
-//        longitude.setToolTipText("[-180..180]");
-//        distance = addTextField(leftPanel, "Distance");
-//        distance.setToolTipText("Une distance non négative");
-//        date = addTextField(leftPanel, "Date de départ");
-//        date.setToolTipText("mm/jj/aa");
-//        minimalMagnitude = addTextField(leftPanel, "Magitude minimale");
-//        minimalMagnitude.setToolTipText("Une valeur non négative");
         
         latitude = addTextField(paramsPanel, "Latitude de référence");
         latitude.setToolTipText("[-90..90]");
@@ -131,7 +103,7 @@ public class GUI {
         
         // Créer les boutons radio de tri
 //        addRatioButtons(leftPanel);
-        addRatioButtons(paramsPanel);
+        addRadioButtons(paramsPanel);
         
         JButton searchButton = new JButton("Rechercher");
         searchButton.addActionListener(sbAL);
@@ -139,17 +111,14 @@ public class GUI {
         leftPanel.add(searchButton, BorderLayout.SOUTH);
         
         // Côté droit de l'interface
-        //Date,Time(UT),Lat,Long,Depth,Mag,Region and Comment
-
-        output2 = createOutputTable();
-        output = new JTextArea();
-        output.setEnabled(false);
+        // Côté droit de l'interface
+        tableModel = new SeismeTableModel();
+        output = new JTable(tableModel);
         
         // Ajouter le côté gauche et droit à l'application.
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(leftPanel);
         splitPane.setRightComponent(new JScrollPane(output));
-        output2.setFillsViewportHeight(true);
 
         
         frame.add(splitPane);
@@ -158,102 +127,12 @@ public class GUI {
         frame.setVisible(true);
     }
     
-    private JTable createOutputTable() {
-    	Object[][] data = {{}, {}, {}, {}, {}, {}, {}, {}};
-    	TableModel dataModel = new AbstractTableModel() {
-            public int getColumnCount() { return 18; }
-            public int getRowCount() { return 6000;}
-            public Object getValueAt(int row, int col) { return new Integer(row*col); }
-        };
-
-    	
-    	JTable outputTable = new JTable(dataModel);
-    	outputTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        TableColumn tc1 = new TableColumn();
-        tc1.setHeaderValue("Date");
-        tc1.setResizable(true);
-        tc1.setMinWidth(100);
-        tc1.setMaxWidth(200);
-        TableColumn tc2 = new TableColumn();
-        tc2.setHeaderValue("Heure (UT)");
-        tc2.setResizable(true);
-        tc2.setMinWidth(100);
-        tc2.setMaxWidth(200);
-        TableColumn tc3 = new TableColumn();
-        tc3.setHeaderValue("Latitude");
-        tc3.setResizable(true);
-        tc3.setMinWidth(100);
-        tc3.setMaxWidth(200);
-        TableColumn tc4 = new TableColumn();
-        tc4.setHeaderValue("Longitude");
-        tc4.setResizable(true);
-        tc4.setMinWidth(100);
-        tc4.setMaxWidth(200);
-        TableColumn tc5 = new TableColumn();
-        tc5.setHeaderValue("Profondeur");
-        tc5.setResizable(true);
-        tc5.setMinWidth(100);
-        tc5.setMaxWidth(200);
-        TableColumn tc6 = new TableColumn();
-        tc6.setHeaderValue("Magnitude");
-        tc6.setResizable(true);
-        tc6.setMinWidth(100);
-        tc6.setMaxWidth(200);
-        TableColumn tc7 = new TableColumn();
-        tc7.setHeaderValue("Region");
-        tc7.setResizable(true);
-        tc7.setMinWidth(100);
-        tc7.setMaxWidth(200);
-        TableColumn tc8 = new TableColumn();
-        tc8.setHeaderValue("Commentaire");
-        tc8.setResizable(true);
-        tc8.setMinWidth(100);
-        tc8.setMaxWidth(200);
-
-        outputTable.addColumn(tc1);
-        outputTable.addColumn(tc2);
-        outputTable.addColumn(tc3);
-        outputTable.addColumn(tc4);
-        outputTable.addColumn(tc5);
-        outputTable.addColumn(tc6);
-        outputTable.addColumn(tc7);
-        outputTable.addColumn(tc8);
-        
-    	return outputTable;
-    }
-
-
     /**
      * Ajoute les boutons radio de tri
      * @param panel le panneau auquel ajouter les boutons radio
      */
-//    private void addRatioButtons(JPanel panel) {
-//        sortDate = new JRadioButton("Date", true);
-//        sortDistance = new JRadioButton("Distance");
-//        sortMagnitude = new JRadioButton("Magnitude");
-//        sortDate.addActionListener(rbAL);
-//        sortDistance.addActionListener(rbAL);
-//        sortMagnitude.addActionListener(rbAL);
-//        
-//        ButtonGroup bg = new ButtonGroup();
-//        bg.add(sortDate);
-//        bg.add(sortDistance);
-//        bg.add(sortMagnitude);
-//        
-//        JPanel radioPanel = new JPanel();
-//        radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
-//        radioPanel.add(sortDate);
-//        radioPanel.add(sortDistance);
-//        radioPanel.add(sortMagnitude);
-//        
-//        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        labelPanel.add(new JLabel("Trier par"));
-//        panel.add(labelPanel);
-//        panel.add(radioPanel);
-//        
-//    }
     
-    private void addRatioButtons(JPanel panel) {
+    private void addRadioButtons(JPanel panel) {
         sortDate = new JRadioButton("Date", true);
         sortDistance = new JRadioButton("Distance");
         sortMagnitude = new JRadioButton("Magnitude");
@@ -274,8 +153,6 @@ public class GUI {
         radioPanel.add(sortMagnitude);
         
         JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-//        labelPanel.add(new JLabel("Trier par"));
-//        panel.add(labelPanel, BorderLayout.NORTH);
         panel.add(radioPanel, BorderLayout.NORTH);
         
     }
@@ -286,24 +163,6 @@ public class GUI {
      * @param labelText le text du JLabel
      * @return le champ texte qui a été créé
      */
-//    private JTextField addTextField(JPanel panel, String labelText) {
-//        JTextField textField = new JTextField(10);
-//        textField.setName(labelText);
-//        JLabel label = new JLabel(labelText);
-//        label.setLabelFor(textField);
-//        
-//        // Ces panneaux sont utilisés pour s'assurer que les champs
-//        // texte ont la hauteur "normale".
-//        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        JPanel textFieldPanel = new JPanel();
-//        labelPanel.add(label);
-//        textFieldPanel.add(textField);
-//
-//        panel.add(labelPanel);
-//        panel.add(textFieldPanel);
-//        
-//        return textField;
-//    }
     
     private JTextField addTextField(JPanel panel, String labelText) {
     	JPanel newPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -313,23 +172,6 @@ public class GUI {
     	panel.add(newPanel);
     	
     	return textField;
-    	
-//        JTextField textField = new JTextField(10);
-//        textField.setName(labelText);
-//        JLabel label = new JLabel(labelText);
-//        label.setLabelFor(textField);
-//        
-//        // Ces panneaux sont utilisés pour s'assurer que les champs
-//        // texte ont la hauteur "normale".
-//        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        JPanel textFieldPanel = new JPanel();
-//        labelPanel.add(label);
-//        textFieldPanel.add(textField);
-//
-//        panel.add(labelPanel);
-//        panel.add(textFieldPanel);
-//        
-//        return textField;
     }
     
     private void setSortType(String sortType) {
@@ -397,14 +239,16 @@ public class GUI {
     				SeismeUtils.sortByDistance(res);
     			else
     				SeismeUtils.sortByMagnitude(res);
-    			output.setText(SeismeUtils.collapseToString(res));
+    			
+    			tableModel.setSeismes(res);
     		}
     	}
     }
     
     
     public static void main(String[] args) {
-        GUI gui = new GUI();
+        GUI gui = new GUI("/Users/eric/Documents/dev/workspace/IFT1025-TP3/src/seismes/seismes.csv");
+//        GUI gui = new GUI(args[0]);
         gui.createGUI();
     }
 }

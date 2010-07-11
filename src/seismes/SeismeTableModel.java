@@ -9,11 +9,17 @@ public class SeismeTableModel extends AbstractTableModel {
     };
     private Seisme[] seismes;
     
-    public SeismeTableModel(Seisme[] seismes) {
+    
+    public void setSeismes(Seisme[] seismes) {
         this.seismes = seismes;
+        fireTableDataChanged();
     }
     
     private String seismeIndex(Seisme seisme, int columnIndex) {
+        if (seisme == null) {
+            System.err.println("seisme est null " + getRowCount());
+            return "NULL";
+        }
         switch (columnIndex) {
         case 0: return seisme.getDatetime().toString();
         case 1: return Double.toString(seisme.getCoord().getLatitude());
@@ -27,7 +33,7 @@ public class SeismeTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return seismes.length;
+        return seismes == null ? 0 : seismes.length;
     }
 
     @Override
@@ -49,4 +55,6 @@ public class SeismeTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         return seismeIndex(seismes[rowIndex], columnIndex);
     }
+    
+
 }

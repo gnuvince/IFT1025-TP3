@@ -17,13 +17,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 
 public class GUI {
     private String filename;
-    private JTextArea output;
+    private JTable output;
+    private SeismeTableModel tableModel;
     
     private JTextField latitude;
     private JTextField longitude;
@@ -116,13 +117,16 @@ public class GUI {
         date = addTextField(leftPanel, "Date de départ");
         minimalMagnitude = addTextField(leftPanel, "Magitude minimale");
         
-        
         // Créer les validateurs
         validators.put(latitude, new RangeValidator(-90, 90));
         validators.put(longitude, new RangeValidator(-180, 180));
         validators.put(distance, new PositiveDoubleValidator());
         validators.put(date, new DateValidator());
         validators.put(minimalMagnitude, new PositiveDoubleValidator());
+        
+        for (JTextField tf: validators.keySet()) {
+            tf.setToolTipText(validators.get(tf).getErrorMessage());
+        }
         
         // Créer les boutons radio de tri
         addRatioButtons(leftPanel);
@@ -156,7 +160,8 @@ public class GUI {
                 		SeismeUtils.sortByDistance(res);
                 	else
                 		SeismeUtils.sortByMagnitude(res);
-                	output.setText(SeismeUtils.collapseToString(res));
+                	
+                	tableModel.setSeismes(res);
                 }
             }
         });
@@ -165,8 +170,8 @@ public class GUI {
         
         
         // Côté droit de l'interface
-        output = new JTextArea();
-        output.setEnabled(false);
+        tableModel = new SeismeTableModel();
+        output = new JTable(tableModel);
         
         // Ajouter le côté gauche et droit à l'application.
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);

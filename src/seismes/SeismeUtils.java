@@ -1,5 +1,6 @@
 package seismes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -52,20 +53,19 @@ public class SeismeUtils {
     public static Seisme[] filterSeismes(Date afterDate, double latitude,
 		                               double longitude, double distance,
 			                           double magnitude, String filename) {
-    	Parser p = new Parser(filename);
-    	Seisme[] raw, filtered;
-    	int n = 0;
+    	
+        Parser p = new Parser(filename);
+    	Seisme[] all;
+        ArrayList<Seisme> accepted = new ArrayList<Seisme>();
 		
 		p.parse();
-		raw = p.getSeismes();
-		filtered = new Seisme[raw.length];
-		for (Seisme s: raw) {
+		all = p.getSeismes();
+		for (Seisme s: all) {
 			if (isAccepted(afterDate, latitude, longitude, distance, magnitude, s)) {
-				filtered[n] = s;
-				n++;
+				accepted.add(s);
 			}
 		}
-    	return filtered;
+    	return accepted.toArray(new Seisme[1]);
     }
     
     public static String collapseToString(Seisme[] arr) {

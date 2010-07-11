@@ -55,12 +55,6 @@ public class GUI {
      */
     private LinkedHashMap<JTextField, Validator> validators;
     
-    private class RBActionListener implements ActionListener{
-    	@Override
-        public void actionPerformed(ActionEvent e) {
-    		setSortType(e.getActionCommand());
-        }
-    }
     
     private void setSortType(String sortType) {
     	this.sortType = sortType;
@@ -92,18 +86,10 @@ public class GUI {
     }
     
     public GUI(String filename) {
-        this.filename = filename;
-    public GUI(String filename) {
     	this.filename = filename;
         validators = new LinkedHashMap<JTextField, Validator>();
         rbAL = new RBActionListener();
         sbAL = new SBActionListener();
-    }
-    
-    
-    public static void main(String[] args) {
-        GUI gui = new GUI(args[0]);
-        gui.createGUI();
     }
     
     
@@ -256,34 +242,6 @@ public class GUI {
     	return textField;
     }
     
-    private void setSortType(String sortType) {
-    	this.sortType = sortType;
-    }
-    
-    private String getSortType() {
-    	return this.sortType;
-    }
-    
-    @SuppressWarnings("deprecation")
-	private Date getDate() {
-    	return new Date(date.getText());
-    }
-    
-    private double getLatitude() {
-    	return Double.parseDouble(latitude.getText());
-    }
-    
-    private double getLongitude() {
-    	return Double.parseDouble(longitude.getText());
-    }
-    
-    private double getDistance() {
-    	return Double.parseDouble(distance.getText());
-    }
-    
-    private double getMagnitude() {
-    	return Double.parseDouble(minimalMagnitude.getText());
-    }
     
     private class RBActionListener implements ActionListener {
     	@Override

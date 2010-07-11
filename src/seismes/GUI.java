@@ -150,12 +150,6 @@ public class GUI {
                 else {
                 	res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
                 			                    getDistance(), getMagnitude(), filename);
-                	System.out.println("res.length: " + res.length);
-                	for (Seisme s : res) {
-                		if (s != null)
-                			System.out.println(s.toString());
-                	}
-                	System.out.println("Fin de la liste");
                 	sortType = getSortType();
                 	if (sortType.equals("Date"))
                 		SeismeUtils.sortByDate(res);

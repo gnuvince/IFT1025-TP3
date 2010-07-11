@@ -61,7 +61,6 @@ public class SeismeUtils {
 		filtered = new Seisme[raw.length];
 		for (Seisme s: raw) {
 			if (isAccepted(afterDate, latitude, longitude, distance, magnitude, s)) {
-				System.out.println("Accepte!!!");
 				filtered[n] = s;
 				n++;
 			}
@@ -76,7 +75,6 @@ public class SeismeUtils {
     		if (s != null)
     			sb.append(s.toString() + "\n");
     	}
-    	
     	return sb.toString();
     }
 }

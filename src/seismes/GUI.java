@@ -2,7 +2,6 @@ package seismes;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -20,12 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 
 public class GUI {
@@ -287,6 +282,10 @@ public class GUI {
     
     
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Utilisation: java seismes.GUI <fichier csv>");
+            System.exit(1);
+        }
         GUI gui = new GUI(args[0]);
         gui.createGUI();
     }

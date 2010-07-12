@@ -132,44 +132,6 @@ public class GUI {
         addRadioButtons(paramsPanel);
         
         JButton searchButton = new JButton("Rechercher");
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LinkedHashMap<JTextField, Validator> validators = getValidators();
-                StringBuilder errorMessage = new StringBuilder();
-                boolean hasErrors = false;
-                String sortType;
-                
-                for (JTextField tf: validators.keySet()) {
-                    Validator v = validators.get(tf);
-                    if (!v.isValid(tf.getText())) {
-                        errorMessage.append(tf.getName() + ": " + v.getErrorMessage() + "\n");
-                        hasErrors = true;
-                    }
-                }
-                
-                if (hasErrors)
-                    JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
-                else {
-                    Seisme[] res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
-                        getDistance(), getMagnitude(), filename);
-                	sortType = getSortType();
-                	if (sortType.equals("Date"))
-                		SeismeUtils.sortByDate(res);
-                	else if (sortType.equals("Distance"))
-                		SeismeUtils.sortByDistance(res);
-                	else
-                		SeismeUtils.sortByMagnitude(res);
-                	
-                	tableModel.setSeismes(res);
-                }
-            }
-        });
-        leftPanel.add(searchButton);
-        
-        
-        
-        // Côté droit de l'interface
         searchButton.addActionListener(sbAL);
         leftPanel.add(paramsPanel, BorderLayout.CENTER);
         leftPanel.add(searchButton, BorderLayout.SOUTH);
@@ -215,7 +177,6 @@ public class GUI {
         radioPanel.add(sortDistance);
         radioPanel.add(sortMagnitude);
         
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panel.add(radioPanel, BorderLayout.NORTH);
         
     }
@@ -270,8 +231,10 @@ public class GUI {
     			sortType = getSortType();
     			if (sortType.equals("Date"))
     				SeismeUtils.sortByDate(res);
-    			else if (sortType.equals("Distance"))
-    				SeismeUtils.sortByDistance(res);
+    			else if (sortType.equals("Distance")) {
+    			    Coord point = new Coord(getLatitude(), getLongitude());
+    			    SeismeUtils.sortByDistance(res, point);
+    			}
     			else
     				SeismeUtils.sortByMagnitude(res);
     			

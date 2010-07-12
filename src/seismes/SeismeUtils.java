@@ -7,6 +7,10 @@ import java.util.Date;
 
 
 public class SeismeUtils {
+    /**
+     * Trie les séismes par date
+     * @param arr le tableau de séisme
+     */
     public static void sortByDate(Seisme[] arr) {
         Arrays.sort(arr, new Comparator<Seisme>() {
            public int compare(Seisme s1, Seisme s2) {
@@ -18,18 +22,25 @@ public class SeismeUtils {
         });
     }
     
-    public static void sortByDistance(Seisme[] arr) {
+    /**
+     * Trie les séismes par distance
+     * @param arr le tableau de séisme
+     */
+    public static void sortByDistance(Seisme[] arr, final Coord point) {
         Arrays.sort(arr, new Comparator<Seisme>() {
            public int compare(Seisme s1, Seisme s2) {
         	   if (s1 != null && s2 != null)
-        		   return (int)((s1.distance() - s2.distance()) * 10);
+        		   return (int)((s1.distance(point) - s2.distance(point)) * 10);
         	   else
         		   return 0;
            }
         });
     }
     
-    
+    /**
+     * Trie les séismes par distance
+     * @param arr le tableau de séisme
+     */
     public static void sortByMagnitude(Seisme[] arr) {
         Arrays.sort(arr, new Comparator<Seisme>() {
            public int compare(Seisme s1, Seisme s2) {

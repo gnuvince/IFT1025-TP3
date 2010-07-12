@@ -1,9 +1,7 @@
-/**
- * 
- */
 package seismes;
 
 /**
+ * Classe qui représente un point sur la terre via sa latitude et longitude
  * @author Eric Thivierge, Vincent Foley
  *
  */

@@ -23,6 +23,10 @@ public class Parser {
 	}
 	
 	
+	/**
+	 * parse() lit le fichier `filename` ligne par ligne et ajoute des objets
+	 * Seisme au tableau `seismes`.
+	 */
 	public void parse() {
 	    ArrayList<Seisme> al = new ArrayList<Seisme>();
 	    try {
@@ -53,6 +57,13 @@ public class Parser {
 	    seismes = al.toArray(seismes);
 	}
 	
+	
+	/**
+	 * Lit une ligne dans `filename` et retourne un objet Seisme ou null
+	 * s'il y a des erreurs
+	 * @param line un String représentant la ligne actuelle
+	 * @return objet Seisme ou null s'il y a des erreurs
+	 */
 	public Seisme parseLine(String line) {
 	    String[] components = line.split(SEPARATOR);
 	    
@@ -90,6 +101,13 @@ public class Parser {
 	}
 	
 	   
+	/**
+	 * Utilise une date au format mm/dd/yy et une heure au format hh:mm:ss
+	 * pour créer un objet date.
+	 * @param dateString date au format mm/dd/yy
+	 * @param timeString heure au format hh:mm:ss
+	 * @return
+	 */
     @SuppressWarnings("deprecation")
     private Date parseDatetime(String dateString, String timeString) {
         String[] dateParts = dateString.split("/");
@@ -107,16 +125,4 @@ public class Parser {
     public Seisme[] getSeismes() {
         return seismes;
     }
-	
-	public static void main(String[] args) {
-	    Parser p = new Parser("seismes.csv");
-	    p.parse();
-	    SeismeUtils.sortByDate(p.getSeismes());
-	    
-	    for (Seisme s: p.getSeismes()) {
-	        System.out.println(s.getDatetime());
-	    }
-	}
-
-
 }

@@ -110,6 +110,10 @@ public class GUI {
         distance = addTextField(paramsPanel, "Distance");
         date = addTextField(paramsPanel, "Date de départ");
         minimalMagnitude = addTextField(paramsPanel, "Magitude minimale");
+<<<<<<< HEAD
+=======
+        minimalMagnitude.setToolTipText("Une valeur non négative");
+>>>>>>> f13484d4b27f92fb09c0a568b8c140b52e0c570a
         
         // Créer les validateurs
         validators.put(latitude, new RangeValidator(-90, 90));
@@ -172,7 +176,11 @@ public class GUI {
         radioPanel.add(sortDate);
         radioPanel.add(sortDistance);
         radioPanel.add(sortMagnitude);
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> f13484d4b27f92fb09c0a568b8c140b52e0c570a
         panel.add(radioPanel, BorderLayout.NORTH);
     }
     
@@ -225,8 +233,10 @@ public class GUI {
     			sortType = getSortType();
     			if (sortType.equals("Date"))
     				SeismeUtils.sortByDate(res);
-    			else if (sortType.equals("Distance"))
-    				SeismeUtils.sortByDistance(res);
+    			else if (sortType.equals("Distance")) {
+    			    Coord point = new Coord(getLatitude(), getLongitude());
+    			    SeismeUtils.sortByDistance(res, point);
+    			}
     			else
     				SeismeUtils.sortByMagnitude(res);
     			
@@ -241,7 +251,10 @@ public class GUI {
             System.err.println("Utilisation: java seismes.GUI <fichier csv>");
             System.exit(1);
         }
+<<<<<<< HEAD
         
+=======
+>>>>>>> f13484d4b27f92fb09c0a568b8c140b52e0c570a
         GUI gui = new GUI(args[0]);
         gui.createGUI();
     }

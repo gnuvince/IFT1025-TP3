@@ -7,6 +7,7 @@ import java.util.Date;
 
 
 /**
+ * Classe représentant un séisme
  * @author Eric Thivierge, Vincent Foley
  *
  */
@@ -18,6 +19,15 @@ public class Seisme {
     private String comment;
     
     
+    /**
+     * Construit un nouveau Seisme
+     * @param latitude la latitude du séisme
+     * @param longitude la longitude du séisme
+     * @param magnitude la magnitude du séisme à l'échelle de Richter
+     * @param datetime la date du séisme
+     * @param depth la profondeur du séisme
+     * @param comment un String
+     */
     public Seisme(
             double latitude, double longitude, double magnitude,
             Date datetime, double depth, String comment) {
@@ -28,10 +38,9 @@ public class Seisme {
         this.comment = comment;
     }
     
-    public double distance() {
-        return 0.0;
+    public double distance(Coord point) {
+        return coord.distance(point);
     }
-            
     
     public Coord getCoord() {
         return coord;

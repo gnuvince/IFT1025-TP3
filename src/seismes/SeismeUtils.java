@@ -67,14 +67,4 @@ public class SeismeUtils {
 		}
     	return accepted.toArray(new Seisme[1]);
     }
-    
-    public static String collapseToString(Seisme[] arr) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	for (Seisme s : arr) {
-    		if (s != null)
-    			sb.append(s.toString() + "\n");
-    	}
-    	return sb.toString();
-    }
 }

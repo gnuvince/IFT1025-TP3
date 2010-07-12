@@ -101,21 +101,15 @@ public class GUI {
         
         // Côté gauche de l'interface
         JPanel leftPanel = new JPanel(new BorderLayout());
-        // New Layout
         JPanel paramsPanel = new JPanel();	
         paramsPanel.setLayout(new BoxLayout(paramsPanel, BoxLayout.Y_AXIS));
         paramsPanel.setBorder(new TitledBorder(new EtchedBorder(), "Paramètres de recherche"));
         
         latitude = addTextField(paramsPanel, "Latitude de référence");
-        latitude.setToolTipText("[-90..90]");
         longitude = addTextField(paramsPanel, "Longitude de référence");
-        longitude.setToolTipText("[-180..180]");
         distance = addTextField(paramsPanel, "Distance");
-        distance.setToolTipText("Une distance non négative");
         date = addTextField(paramsPanel, "Date de départ");
-        date.setToolTipText("mm/jj/aa");
         minimalMagnitude = addTextField(paramsPanel, "Magitude minimale");
-        minimalMagnitude.setToolTipText("Une valeur non négative");
         
         // Créer les validateurs
         validators.put(latitude, new RangeValidator(-90, 90));
@@ -132,42 +126,7 @@ public class GUI {
         addRadioButtons(paramsPanel);
         
         JButton searchButton = new JButton("Rechercher");
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LinkedHashMap<JTextField, Validator> validators = getValidators();
-                StringBuilder errorMessage = new StringBuilder();
-                boolean hasErrors = false;
-                String sortType;
-                
-                for (JTextField tf: validators.keySet()) {
-                    Validator v = validators.get(tf);
-                    if (!v.isValid(tf.getText())) {
-                        errorMessage.append(tf.getName() + ": " + v.getErrorMessage() + "\n");
-                        hasErrors = true;
-                    }
-                }
-                
-                if (hasErrors)
-                    JOptionPane.showMessageDialog(frame, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
-                else {
-                    Seisme[] res = SeismeUtils.filterSeismes(getDate(), getLatitude(), getLongitude(),
-                        getDistance(), getMagnitude(), filename);
-                	sortType = getSortType();
-                	if (sortType.equals("Date"))
-                		SeismeUtils.sortByDate(res);
-                	else if (sortType.equals("Distance"))
-                		SeismeUtils.sortByDistance(res);
-                	else
-                		SeismeUtils.sortByMagnitude(res);
-                	
-                	tableModel.setSeismes(res);
-                }
-            }
-        });
         leftPanel.add(searchButton);
-        
-        
         
         // Côté droit de l'interface
         searchButton.addActionListener(sbAL);
@@ -194,7 +153,6 @@ public class GUI {
      * Ajoute les boutons radio de tri
      * @param panel le panneau auquel ajouter les boutons radio
      */
-    
     private void addRadioButtons(JPanel panel) {
         sortDate = new JRadioButton("Date", true);
         sortDistance = new JRadioButton("Distance");
@@ -214,10 +172,8 @@ public class GUI {
         radioPanel.add(sortDate);
         radioPanel.add(sortDistance);
         radioPanel.add(sortMagnitude);
-        
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
         panel.add(radioPanel, BorderLayout.NORTH);
-        
     }
     
     /**
@@ -226,7 +182,6 @@ public class GUI {
      * @param labelText le text du JLabel
      * @return le champ texte qui a été créé
      */
-    
     private JTextField addTextField(JPanel panel, String labelText) {
     	JPanel newPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     	newPanel.add(new JLabel(labelText));
@@ -286,6 +241,7 @@ public class GUI {
             System.err.println("Utilisation: java seismes.GUI <fichier csv>");
             System.exit(1);
         }
+        
         GUI gui = new GUI(args[0]);
         gui.createGUI();
     }

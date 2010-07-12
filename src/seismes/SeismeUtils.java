@@ -77,8 +77,6 @@ public class SeismeUtils {
 			}
 		}
     	return accepted.toArray(new Seisme[1]);
-<<<<<<< HEAD
-=======
     }
     
     public static String collapseToString(Seisme[] arr) {
@@ -89,6 +87,5 @@ public class SeismeUtils {
     			sb.append(s.toString() + "\n");
     	}
     	return sb.toString();
->>>>>>> f13484d4b27f92fb09c0a568b8c140b52e0c570a
     }
 }

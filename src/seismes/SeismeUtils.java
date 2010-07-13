@@ -89,6 +89,6 @@ public class SeismeUtils {
 				accepted.add(s);
 			}
 		}
-    	return accepted.toArray(new Seisme[1]);
+    	return accepted.toArray(new Seisme[0]);
     }
 }

@@ -22,8 +22,7 @@ public class SeismeTableModel extends AbstractTableModel {
     
     private String seismeIndex(Seisme seisme, int columnIndex) {
         if (seisme == null) {
-            System.err.println("seisme est null " + getRowCount());
-            return "NULL";
+            return "";
         }
         switch (columnIndex) {
         case 0: return seisme.getDatetime().toString();

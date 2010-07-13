@@ -189,6 +189,7 @@ public class GUI {
     	JPanel newPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     	newPanel.add(new JLabel(labelText));
     	JTextField textField = new JTextField(10);
+    	textField.setName(labelText);
     	newPanel.add(textField);
     	panel.add(newPanel);
     	
@@ -236,6 +237,10 @@ public class GUI {
     				SeismeUtils.sortByMagnitude(res);
     			
     			tableModel.setSeismes(res);
+    			
+    			if (res.length == 0) {
+    			    JOptionPane.showMessageDialog(frame, "Aucun séisme trouvé.");
+    			}
     		}
     	}
     }

@@ -22,7 +22,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-
+/**
+ * Classe principale de l'application
+ * @author Eric Thivierge, Vincent Foley
+ *
+ */
 public class GUI {
 	private String filename;
     private JTable output;

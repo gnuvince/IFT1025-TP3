@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
+ * Parse les lignes du fichier donne
  * @author Eric Thivierge, Vincent Foley
  *
  */

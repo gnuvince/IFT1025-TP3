@@ -6,7 +6,7 @@ import java.text.ParseException;
 
 /**
  * Interface pour la validation d'une chaîne de caractères.
- * @author vince
+ * @author Vincent Foley, Eric Thivierge
  *
  */
 public interface Validator {

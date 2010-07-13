@@ -2,6 +2,11 @@ package seismes;
 
 import javax.swing.table.AbstractTableModel;
 
+/**
+ * Classe pour implementer JTable
+ * @author Eric Thivierge, Vincent Foley
+ *
+ */
 @SuppressWarnings("serial")
 public class SeismeTableModel extends AbstractTableModel {
     private static final String[] columns = {
@@ -55,6 +60,4 @@ public class SeismeTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         return seismeIndex(seismes[rowIndex], columnIndex);
     }
-    
-
 }

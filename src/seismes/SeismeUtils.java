@@ -5,7 +5,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-
+/**
+ * Classe utilitaire pour le tri des entrees
+ * @author Eric Thivierge, Vincent Foley
+ *
+ */
 public class SeismeUtils {
     /**
      * Trie les séismes par date
@@ -61,6 +65,15 @@ public class SeismeUtils {
     		    (seisme.getMagnitude() >= magnitude);
     }
     
+    /**
+     * Filtre les seismes selon les params donnés
+     * @param afterDate	ne pas afficher les seismes avant cette date
+     * @param latitude	latitude de référence
+     * @param longitude	longitude de référence
+     * @param distance	distance max par rapport à (latitude, longitude)
+     * @param magnitude	magnitude minimale
+     * @param filename	le fichier contenant les seismes enregistrés
+     */
     public static Seisme[] filterSeismes(Date afterDate, double latitude,
 		                               double longitude, double distance,
 			                           double magnitude, String filename) {
@@ -77,15 +90,5 @@ public class SeismeUtils {
 			}
 		}
     	return accepted.toArray(new Seisme[1]);
-    }
-    
-    public static String collapseToString(Seisme[] arr) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	for (Seisme s : arr) {
-    		if (s != null)
-    			sb.append(s.toString() + "\n");
-    	}
-    	return sb.toString();
     }
 }
